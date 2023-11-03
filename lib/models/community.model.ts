@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const communitySchema = new mongoose.Schema({
-  id: {
+  communityId: {
     type: String,
     required: true,
   },

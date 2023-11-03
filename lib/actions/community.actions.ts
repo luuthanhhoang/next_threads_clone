@@ -27,7 +27,7 @@ export async function createCommunity(
     }
 
     const newCommunity = new Community({
-      id,
+      communityId: id,
       name,
       username,
       image,
@@ -53,7 +53,9 @@ export async function fetchCommunityDetails(id: string) {
   try {
     connectToDB();
 
-    const communityDetails = await Community.findOne({ id }).populate([
+    const communityDetails = await Community.findOne({
+      communityId: id,
+    }).populate([
       "createdBy",
       {
         path: "members",
@@ -74,7 +76,9 @@ export async function fetchCommunityPosts(id: string) {
   try {
     connectToDB();
 
-    const communityPosts = await Community.findById(id).populate({
+    const communityPosts = await Community.findOne({
+      communityId: id,
+    }).populate({
       path: "threads",
       model: Thread,
       populate: [
@@ -167,7 +171,7 @@ export async function addMemberToCommunity(
     connectToDB();
 
     // Find the community by its unique id
-    const community = await Community.findOne({ id: communityId });
+    const community = await Community.findOne({ communityId });
 
     if (!community) {
       throw new Error("Community not found");
@@ -210,7 +214,7 @@ export async function removeUserFromCommunity(
 
     const userIdObject = await User.findOne({ id: userId }, { _id: 1 });
     const communityIdObject = await Community.findOne(
-      { id: communityId },
+      { communityId },
       { _id: 1 }
     );
 
@@ -253,7 +257,7 @@ export async function updateCommunityInfo(
 
     // Find the community by its _id and update the information
     const updatedCommunity = await Community.findOneAndUpdate(
-      { id: communityId },
+      { communityId },
       { name, username, image }
     );
 
@@ -275,7 +279,7 @@ export async function deleteCommunity(communityId: string) {
 
     // Find the community by its ID and delete it
     const deletedCommunity = await Community.findOneAndDelete({
-      id: communityId,
+      communityId,
     });
 
     if (!deletedCommunity) {
